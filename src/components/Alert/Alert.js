@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { authSelectors, authActions } from '../../redux/auth';
 import { contactsSelectors } from '../../redux/contacts';
 import { CSSTransition } from 'react-transition-group';
@@ -8,57 +8,47 @@ import alertStyle from '../../transitionsStyles/fadeAlertStyle.module.css';
 import PropTypes from 'prop-types';
 import s from './Alert.module.css';
 
-class Alert extends Component {
-  static propTypes = {
-    message: PropTypes.string,
-    errorPb: PropTypes.object,
-    errorAuth: PropTypes.string,
-    clearErrorPb: PropTypes.func,
-    clearErrorPAuth: PropTypes.func,
-  };
+export default function Alert({ message }) {
+  const errorContacts = useSelector(contactsSelectors.getError);
+  const errorAuth = useSelector(authSelectors.getError);
 
-  componentDidUpdate() {
-    if (this.props.errorContacts) {
-      setTimeout(() => {
-        this.props.clearErrorContacts();
-      }, 3000);
-      return;
-    }
-    if (this.props.errorAuth) {
-      setTimeout(() => {
-        this.props.clearErrorAuth();
-      }, 3000);
-      return;
-    }
-  }
+  const dispatch = useDispatch();
 
-  render() {
-    return (
-      <CSSTransition
-        in={this.props.message}
-        classNames={alertStyle}
-        timeout={250}
-        unmountOnExit
-      >
-        <div className={s.Container}>
-          <p className={s.Text}>{this.props.message}</p>
-        </div>
-      </CSSTransition>
-    );
-  }
+  useEffect(() => {
+    setTimeout(() => {
+      dispatch(contactsAction.clearError());
+    }, 3000);
+    return;
+  }, [errorContacts, dispatch]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      dispatch(authActions.clearError());
+    }, 3000);
+    return;
+  }, [errorAuth, dispatch]);
+
+  return (
+    <CSSTransition
+      in={Boolean(message)}
+      classNames={alertStyle}
+      timeout={250}
+      unmountOnExit
+    >
+      <div className={s.Container}>
+        <p className={s.Text}>{message}</p>
+      </div>
+    </CSSTransition>
+  );
 }
 
-const mapStateToProps = state => ({
-  errorContacts: contactsSelectors.getError(state),
-  errorAuth: authSelectors.getError(state),
-});
-
-const mapDispatchToProps = dispatch => ({
-  clearErrorContacts: () => dispatch(contactsAction.clearError()),
-  clearErrorAuth: () => dispatch(authActions.clearError()),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Alert);
+Alert.propTypes = {
+  message: PropTypes.string,
+  errorContacts: PropTypes.object,
+  errorAuth: PropTypes.string,
+  clearErrorContacts: PropTypes.func,
+  clearErrorPAuth: PropTypes.func,
+};
 
 // const Alert = ({ text }) => {
 //   return (

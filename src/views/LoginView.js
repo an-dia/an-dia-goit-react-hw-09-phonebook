@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { useState, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { authOperations, authSelectors } from '../redux/auth';
 import Container from '../components/Container';
 import shortid from 'shortid';
@@ -9,83 +9,165 @@ import Alert from '../components/Alert';
 import s from './LoginView.module.css';
 import TextField from '@material-ui/core/TextField';
 
-class LoginView extends Component {
-  state = {
-    email: '',
-    password: '',
-  };
+export default function LoginView() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  inputEmailId = shortid.generate();
-  inputPasswordId = shortid.generate();
+  const dispatch = useDispatch();
 
-  handleChange = ({ target: { name, value } }) => {
-    this.setState({ [name]: value });
-  };
+  const isError = useSelector(authSelectors.getError);
+  const isLoading = useSelector(authSelectors.getLoading);
 
-  handleSubmit = e => {
+  const onLogin = useCallback(e => dispatch(authOperations.logIn(e)), [
+    dispatch,
+  ]);
+
+  const inputEmailId = shortid.generate();
+  const inputPasswordId = shortid.generate();
+
+  const handleChange = useCallback(e => {
+    const { name, value } = e.target;
+    switch (name) {
+      case 'email':
+        setEmail(value);
+        break;
+
+      case 'password':
+        setPassword(value);
+        break;
+
+      default:
+        return;
+    }
+  }, []);
+
+  const handleSubmit = e => {
     e.preventDefault();
 
-    this.props.onLogin(this.state);
+    onLogin({ email, password });
 
-    this.setState({ name: '', email: '', password: '' });
+    setEmail('');
+    setPassword('');
   };
 
-  render() {
-    const { email, password } = this.state;
+  return (
+    <Container>
+      <div className={s.wrapper}>
+        <h1 className={s.title}>Log in</h1>
 
-    return (
-      <Container>
-        <div className={s.wrapper}>
-          <h1 className={s.title}>Log in</h1>
+        {isLoading && <Loader />}
 
-          {this.props.isLoading && <Loader />}
+        <Alert message={isError} />
 
-          <Alert message={this.props.isError} />
-
-          <form
-            onSubmit={this.handleSubmit}
-            className={s.form}
-            autoComplete="off"
-          >
-            <TextField
-              className={s.label}
-              id={this.inputEmailId}
-              label="Email"
-              type="email"
-              autoComplete="current-email"
-              variant="outlined"
-              name="email"
-              value={email}
-              onChange={this.handleChange}
-            />
-            <TextField
-              className={s.label}
-              id={this.inputPasswordId}
-              label="Password"
-              type="password"
-              autoComplete="current-password"
-              variant="outlined"
-              name="password"
-              value={password}
-              onChange={this.handleChange}
-            />
-            <Button variant="contained" color="primary" type="submit">
-              Login
-            </Button>
-          </form>
-        </div>
-      </Container>
-    );
-  }
+        <form onSubmit={handleSubmit} className={s.form} autoComplete="off">
+          <TextField
+            className={s.label}
+            id={inputEmailId}
+            label="Email"
+            type="email"
+            autoComplete="current-email"
+            variant="outlined"
+            name="email"
+            value={email}
+            onChange={handleChange}
+          />
+          <TextField
+            className={s.label}
+            id={inputPasswordId}
+            label="Password"
+            type="password"
+            autoComplete="current-password"
+            variant="outlined"
+            name="password"
+            value={password}
+            onChange={handleChange}
+          />
+          <Button variant="contained" color="primary" type="submit">
+            Login
+          </Button>
+        </form>
+      </div>
+    </Container>
+  );
 }
 
-const mapStateToProps = state => ({
-  isError: authSelectors.getError(state),
-  isLoading: authSelectors.getLoading(state),
-});
+// class LoginView extends Component {
+//   state = {
+//     email: '',
+//     password: '',
+//   };
 
-const mapDispatchToProps = {
-  onLogin: authOperations.logIn,
-};
+//   inputEmailId = shortid.generate();
+//   inputPasswordId = shortid.generate();
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginView);
+//   handleChange = ({ target: { name, value } }) => {
+//     this.setState({ [name]: value });
+//   };
+
+//   handleSubmit = e => {
+//     e.preventDefault();
+
+//     this.props.onLogin(this.state);
+
+//     this.setState({ name: '', email: '', password: '' });
+//   };
+
+//   render() {
+//     const { email, password } = this.state;
+
+//     return (
+//       <Container>
+//         <div className={s.wrapper}>
+//           <h1 className={s.title}>Log in</h1>
+
+//           {this.props.isLoading && <Loader />}
+
+//           <Alert message={this.props.isError} />
+
+//           <form
+//             onSubmit={this.handleSubmit}
+//             className={s.form}
+//             autoComplete="off"
+//           >
+//             <TextField
+//               className={s.label}
+//               id={this.inputEmailId}
+//               label="Email"
+//               type="email"
+//               autoComplete="current-email"
+//               variant="outlined"
+//               name="email"
+//               value={email}
+//               onChange={this.handleChange}
+//             />
+//             <TextField
+//               className={s.label}
+//               id={this.inputPasswordId}
+//               label="Password"
+//               type="password"
+//               autoComplete="current-password"
+//               variant="outlined"
+//               name="password"
+//               value={password}
+//               onChange={this.handleChange}
+//             />
+//             <Button variant="contained" color="primary" type="submit">
+//               Login
+//             </Button>
+//           </form>
+//         </div>
+//       </Container>
+//     );
+//   }
+// }
+
+// const mapStateToProps = state => ({
+//   isError: authSelectors.getError(state),
+//   isLoading: authSelectors.getLoading(state),
+// });
+
+// const mapDispatchToProps = {
+//   onLogin: authOperations.logIn,
+// };
+
+// export default connect(mapStateToProps, mapDispatchToProps)(LoginView);

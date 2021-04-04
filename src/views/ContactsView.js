@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { CSSTransition } from 'react-transition-group';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Container from '../components/Container';
 import Alert from '../components/Alert';
 import fadeStyles from '../transitionsStyles/fade.module.css';
@@ -18,84 +18,67 @@ import {
   changeFilter,
 } from '../redux/contacts';
 
-class ContactsView extends Component {
-  static propTypes = {
-    contacts: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        name: PropTypes.string,
-        number: PropTypes.string,
-      }),
-    ),
-    visibleContacts: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        name: PropTypes.string,
-        number: PropTypes.string,
-      }),
-    ),
-    fetchContacts: PropTypes.func,
-    clearFilter: PropTypes.func,
-    isLoadingContacts: PropTypes.bool,
-    error: PropTypes.string,
-  };
+export default function ContactsView() {
+  const dispatch = useDispatch();
 
-  componentDidMount() {
-    this.props.fetchContacts();
-  }
+  const contacts = useSelector(contactsSelectors.getContacts);
+  const isLoadingContacts = useSelector(contactsSelectors.getLoading);
+  const error = useSelector(contactsSelectors.getError);
+  const visibleContacts = useSelector(contactsSelectors.getContacts);
 
-  render() {
-    return (
-      <Container>
-        <div className={s.wrapper}>
-          {this.props.error ? (
-            <Alert />
-          ) : // <h1 style={{ color: 'red' }}>Error: {this.props.error}</h1>
-          null}
-          <Title title="Phonebook" level={1} />
-          {/* <CSSTransition in={true} appear={true} timeout={500} classNames={appearFormStyles} unmountOnExit> */}
-          <ContactForm />
-          {/* </CSSTransition> */}
-          <Title title="Contacts" level={2} />
-          <CSSTransition
-            in={this.props.contacts.length > 1}
-            classNames={searchFadeStyles}
-            timeout={250}
-            unmountOnExit
-            onExit={() => this.props.clearFilter()}
-          >
-            <Filter />
-          </CSSTransition>
-          {this.props.isLoadingContacts && <LoaderSpinner />}
-          <CSSTransition
-            in={
-              this.props.visibleContacts.length !== 0 ||
-              this.props.contacts.length > 1
-            }
-            classNames={fadeStyles}
-            timeout={250}
-            unmountOnExit
-          >
-            <ContactList />
-          </CSSTransition>
-        </div>
-      </Container>
-    );
-  }
+  useEffect(() => {
+    dispatch(contactsOperations.fetchContacts());
+  }, [dispatch]);
+
+  const clearFilter = () => dispatch(changeFilter(''));
+
+  return (
+    <Container>
+      <div className={s.wrapper}>
+        {error ? <Alert /> : null}
+        <Title title="Phonebook" level={1} />
+        <ContactForm />
+        <Title title="Contacts" level={2} />
+        <CSSTransition
+          in={contacts.length > 1}
+          classNames={searchFadeStyles}
+          timeout={250}
+          unmountOnExit
+          onExit={() => clearFilter()}
+        >
+          <Filter />
+        </CSSTransition>
+        {isLoadingContacts && <LoaderSpinner />}
+        <CSSTransition
+          in={visibleContacts.length !== 0 || contacts.length > 1}
+          classNames={fadeStyles}
+          timeout={250}
+          unmountOnExit
+        >
+          <ContactList />
+        </CSSTransition>
+      </div>
+    </Container>
+  );
 }
 
-const mapStateToProps = state => ({
-  // console.log(state)
-  contacts: contactsSelectors.getContacts(state),
-  filter: contactsSelectors.getFilter(state),
-  isLoadingContacts: contactsSelectors.getLoading(state),
-  error: contactsSelectors.getError(state),
-  visibleContacts: contactsSelectors.getVisibleContacts(state),
-});
-
-const mapDispatchToProps = dispatch => ({
-  fetchContacts: () => dispatch(contactsOperations.fetchContacts()),
-  clearFilter: () => dispatch(changeFilter('')),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ContactsView);
+ContactsView.propTypes = {
+  contacts: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string,
+      number: PropTypes.string,
+    }),
+  ),
+  visibleContacts: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string,
+      number: PropTypes.string,
+    }),
+  ),
+  fetchContacts: PropTypes.func,
+  clearFilter: PropTypes.func,
+  isLoadingContacts: PropTypes.bool,
+  error: PropTypes.string,
+};

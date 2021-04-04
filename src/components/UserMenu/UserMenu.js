@@ -17,7 +17,6 @@ export default function UserMenu() {
   return (
     <div className={s.container}>
       <Avatar alt="Avatar" src={defaultAvatar} />
-      {/* <img src={avatar} alt="" width="32" className={s.avatar} /> */}
       <span className={s.name}>Welcome, {name}</span>
       <Button
         variant="contained"
@@ -27,20 +26,6 @@ export default function UserMenu() {
       >
         Logout
       </Button>
-      {/* <button type="button" onClick={onLogout}>
-      Logout
-    </button> */}
     </div>
   );
 }
-
-// const mapStateToProps = state => ({
-//   name: authSelectors.getUserName(state),
-//   avatar: defaultAvatar,
-// });
-
-// const mapDispatchToProps = {
-//   onLogout: authOperations.logOut,
-// };
-
-// export default connect(mapStateToProps, mapDispatchToProps)(UserMenu);

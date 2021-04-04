@@ -96,7 +96,7 @@ export default function ContactForm() {
           id={inputNumberId}
           label="Number"
           type="number"
-          // autoComplete="current-password"
+          autoComplete="current-number"
           variant="outlined"
           value={number}
           name="number"

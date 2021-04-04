@@ -23,7 +23,7 @@ export default function Filter() {
         id="outlined-search"
         label="Search"
         type="search"
-        // autoComplete="current-password"
+        autoComplete="current-search"
         variant="outlined"
         value={value}
         name="value"

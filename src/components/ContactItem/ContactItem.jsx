@@ -11,9 +11,6 @@ const ContactItem = ({ name, number, onDeleteContact }) => {
         <Button variant="contained" color="secondary" onClick={onDeleteContact}>
           Delete
         </Button>
-        {/* <button className={s.button} type="button" onClick={onDeleteContact}>
-          Delete
-        </button> */}
       </li>
     </>
   );

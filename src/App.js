@@ -32,76 +32,20 @@ export default function App() {
       <MainAppBar />
       <Suspense fallback={<LoaderSpinner />}>
         <Switch>
-          <PublicRoute exact path="/" component={HomeView} />
-          <PublicRoute
-            path="/register"
-            restricted
-            redirectTo={'/contacts'}
-            component={RegisterView}
-          />
-          <PublicRoute
-            path="/login"
-            restricted
-            redirectTo={'/contacts'}
-            component={LoginView}
-          />
-          <PrivateRoute
-            path="/contacts"
-            redirectTo={'/login'}
-            component={ContactsView}
-          />
+          <PublicRoute exact path="/">
+            <HomeView />
+          </PublicRoute>
+          <PublicRoute path="/register" restricted redirectTo={'/contacts'}>
+            <RegisterView />
+          </PublicRoute>
+          <PublicRoute path="/login" restricted redirectTo={'/contacts'}>
+            <LoginView />
+          </PublicRoute>
+          <PrivateRoute path="/contacts" redirectTo={'/login'}>
+            <ContactsView />
+          </PrivateRoute>
         </Switch>
       </Suspense>
     </>
   );
 }
-
-// const mapDispatchToProps = {
-//   onGetCurrentUser: authOperations.getCurrentUser,
-// };
-
-// export default connect(null, mapDispatchToProps)(App);
-
-// class App extends Component {
-//   componentDidMount() {
-//     this.props.onGetCurrentUser();
-//   }
-
-//   render() {
-//     return (
-//       <>
-//         <MainAppBar />
-//         {/* <Container> */}
-//         <Suspense fallback={<LoaderSpinner />}>
-//           <Switch>
-//             <PublicRoute exact path="/" component={HomeView} />
-//             <PublicRoute
-//               path="/register"
-//               restricted
-//               redirectTo={'/contacts'}
-//               component={RegisterView}
-//             />
-//             <PublicRoute
-//               path="/login"
-//               restricted
-//               redirectTo={'/contacts'}
-//               component={LoginView}
-//             />
-//             <PrivateRoute
-//               path="/contacts"
-//               redirectTo={'/login'}
-//               component={ContactsView}
-//             />
-//           </Switch>
-//         </Suspense>
-//         {/* </Container> */}
-//       </>
-//     );
-//   }
-// }
-
-// const mapDispatchToProps = {
-//   onGetCurrentUser: authOperations.getCurrentUser,
-// };
-
-// export default connect(null, mapDispatchToProps)(App);
