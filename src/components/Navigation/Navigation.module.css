@@ -1,0 +1,13 @@
+.link {
+  display: inline-block;
+  text-decoration: none;
+  padding: 12px;
+  font-weight: 500px;
+  color: #ffffff;
+  text-transform: uppercase;
+  font-family: inherit;
+}
+
+.activeLink {
+  color: #e84a5f;
+}

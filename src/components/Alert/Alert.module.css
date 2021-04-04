@@ -1,0 +1,18 @@
+.Container {
+  z-index: 100;
+  position: absolute;
+  max-width: 400px;
+  height: auto;
+  padding: 10px 20px;
+  text-align: center;
+  color: #ffffff;
+  background-color: #ff0000;
+  right: 100px;
+  top: 50px;
+}
+
+.Text {
+  text-transform: uppercase;
+  font-size: medium;
+  font-weight: 600;
+}
