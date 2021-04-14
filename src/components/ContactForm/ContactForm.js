@@ -6,7 +6,7 @@ import s from './ContactForm.module.css';
 import shortid from 'shortid';
 import Alert from '../Alert';
 import contactsSelectors from '../../redux/contacts/contacts-selectors';
-import TextField from '@material-ui/core/TextField';
+// import TextField from '@material-ui/core/TextField';
 
 export default function ContactForm() {
   const [name, setName] = useState('');
@@ -80,28 +80,64 @@ export default function ContactForm() {
       <Alert message={message} />
 
       <form className={s.form} onSubmit={handleSubmit}>
-        <TextField
+        <label className={s.label} htmlFor={inputNameId}>
+          <span>Name</span>
+        </label>
+        <input
+          className={s.input}
+          placeholder="Name"
+          type="text"
+          name="name"
+          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+          title="Имя может состоять только из букв, апострофа, тире и пробелов. Например Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan и т. п."
+          required
+          id={inputNameId}
+          value={name}
+          onChange={handlerChange}
+        />
+        {/* <TextField
           className={s.label}
           id={inputNameId}
           label="Name"
-          type="name"
-          autoComplete="current-password"
+          type="text"
+          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+          title="Имя может состоять только из букв, апострофа, тире и пробелов. Например Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan и т. п."
+          required
+          autoComplete="current-name"
           variant="outlined"
           value={name}
           name="name"
           onChange={handlerChange}
+        /> */}
+        <label className={s.label} htmlFor={inputNumberId}>
+          <span>Number</span>
+        </label>
+        <input
+          className={s.input}
+          placeholder="Number"
+          id={inputNumberId}
+          type="tel"
+          pattern="(\+?( |-|\.)?\d{1,2}( |-|\.)?)?(\(?\d{3}\)?|\d{3})( |-|\.)?(\d{3}( |-|\.)?\d{4})"
+          title="Номер телефона должен состоять из 11-12 цифр и может содержать цифры, пробелы, тире, пузатые скобки и может начинаться с +"
+          required
+          value={number}
+          name="number"
+          onChange={handlerChange}
         />
-        <TextField
+        {/* <TextField
           className={s.label}
           id={inputNumberId}
           label="Number"
-          type="number"
+          type="tel"
+          pattern="(\+?( |-|\.)?\d{1,2}( |-|\.)?)?(\(?\d{3}\)?|\d{3})( |-|\.)?(\d{3}( |-|\.)?\d{4})"
+          title="Номер телефона должен состоять из 11-12 цифр и может содержать цифры, пробелы, тире, пузатые скобки и может начинаться с +"
+          required
           autoComplete="current-number"
           variant="outlined"
           value={number}
           name="number"
           onChange={handlerChange}
-        />
+        /> */}
         <Button variant="contained" color="primary" type="submit">
           Add contact
         </Button>
